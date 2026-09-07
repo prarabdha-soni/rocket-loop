@@ -12,8 +12,11 @@ export function Sparkline({
   const max = Math.max(...data);
   const span = max - min || 1;
   const step = width / (data.length - 1);
-  const points = data.map((v, i) => [i * step, height - ((v - min) / span) * (height - 6) - 3]);
-  const line = points.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+  const points = data.map((v, i) => ({
+    x: i * step,
+    y: height - ((v - min) / span) * (height - 6) - 3,
+  }));
+  const line = points.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
   const area = `${line} ${width},${height} 0,${height}`;
   const id = `spark-${stroke.replace(/[^a-z]/gi, "")}`;
 

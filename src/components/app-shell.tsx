@@ -1,11 +1,11 @@
 import { Link } from "@tanstack/react-router";
-import { Activity, LayoutGrid, Users, Radar, Command } from "lucide-react";
+import { Activity, LayoutGrid, Users, Radar, Command, Dumbbell } from "lucide-react";
 import type { ReactNode } from "react";
 
 const nav = [
-  { to: "/", label: "Strategic Matrix", desc: "Market · Competitors", icon: LayoutGrid },
-  { to: "/execution", label: "Execution Engine", desc: "Milestones · Tasks", icon: Activity },
-  { to: "/pipeline", label: "Lead Pipeline Studio", desc: "ICP · Outreach", icon: Users },
+  { to: "/", label: "Strategic Matrix", desc: "Market · Brands", icon: LayoutGrid },
+  { to: "/execution", label: "Execution Engine", desc: "Milestones · Agents", icon: Activity },
+  { to: "/pipeline", label: "Lead Pipeline Studio", desc: "Accounts · WhatsApp", icon: Users },
 ] as const;
 
 export function AppShell({
@@ -24,11 +24,11 @@ export function AppShell({
       <aside className="sticky top-0 hidden h-screen w-[264px] shrink-0 flex-col border-r border-border bg-sidebar lg:flex">
         <div className="flex items-center gap-2.5 px-5 py-5">
           <div className="flex size-8 items-center justify-center rounded-md bg-primary">
-            <Radar className="size-4 text-primary-foreground" />
+            <Dumbbell className="size-4 text-primary-foreground" />
           </div>
           <div className="leading-tight">
-            <div className="text-sm font-semibold tracking-tight">SignalOS</div>
-            <div className="text-[11px] text-muted-foreground">GTM Execution Workspace</div>
+            <div className="text-sm font-semibold tracking-tight">KotaWhey Nutrition</div>
+            <div className="text-[11px] text-muted-foreground">Kota Distribution Command</div>
           </div>
         </div>
 
@@ -66,16 +66,25 @@ export function AppShell({
           <div className="rounded-lg border border-border bg-surface p-3">
             <div className="flex items-center gap-2">
               <span className="size-1.5 rounded-full bg-emerald" />
-              <span className="text-xs font-medium">6 agents live</span>
+              <span className="text-xs font-medium">8 local agents live</span>
             </div>
             <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground">
-              Signals refreshed 4 minutes ago across 1,284 tracked accounts.
+              Signals refreshed 2 mins ago across 142 tracked gyms & retailers in Kota.
             </p>
           </div>
         </div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex items-center gap-2 border-b border-border bg-surface px-6 py-2 text-[11px] text-muted-foreground lg:px-8">
+          <Radar className="size-3 text-emerald" />
+          <span>
+            <span className="font-medium text-foreground">8 local agents live</span>
+            {"  |  "}Signals refreshed 2 mins ago across{" "}
+            <span className="font-medium text-foreground">142 tracked gyms & retailers</span> in
+            Kota
+          </span>
+        </div>
         <header className="sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur">
           <div className="flex flex-wrap items-end justify-between gap-4 px-6 py-5 lg:px-8">
             <div>

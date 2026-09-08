@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check, Copy, Mail, Linkedin, Sparkles, Search, Download } from "lucide-react";
+import { Check, Copy, MessageCircle, Search, Download } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/app-shell";
@@ -12,43 +12,37 @@ import { leads, type Lead } from "@/data/gtm";
 export const Route = createFileRoute("/pipeline")({
   head: () => ({
     meta: [
-      { title: "Lead Pipeline Studio — SignalOS ICP Accounts" },
+      { title: "Lead Pipeline Studio — KotaWhey Kota Accounts" },
       {
         name: "description",
         content:
-          "Dense ICP account table with AI-detected pain points and one-click personalized outreach drafting.",
+          "High-density table of Kota gyms, wholesalers and hostels with one-tap localized WhatsApp outreach drafts.",
       },
-      { property: "og:title", content: "Lead Pipeline Studio — SignalOS ICP Accounts" },
+      { property: "og:title", content: "Lead Pipeline Studio — KotaWhey Kota Accounts" },
       {
         property: "og:description",
-        content: "Target enterprise accounts and draft hyper-personalized outreach instantly.",
+        content: "Target regional Kota accounts and draft localized WhatsApp outreach instantly.",
       },
     ],
   }),
   component: PipelinePage,
 });
 
-const tierStyles: Record<string, string> = {
-  "Tier 1": "border-emerald/40 bg-emerald/10 text-emerald",
-  "Tier 2": "border-primary/40 bg-primary/10 text-primary",
-  "Tier 3": "border-border-strong bg-surface-raised text-muted-foreground",
-};
-
 function PipelinePage() {
   const [query, setQuery] = useState("");
   const [active, setActive] = useState<Lead | null>(null);
-  const [copied, setCopied] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const rows = leads.filter((l) =>
-    `${l.company} ${l.pain} ${l.contact} ${l.industry}`.toLowerCase().includes(query.toLowerCase()),
+    `${l.name} ${l.pain} ${l.territory} ${l.type}`.toLowerCase().includes(query.toLowerCase()),
   );
 
-  async function copy(key: string, text: string) {
+  async function copy(text: string) {
     try {
       await navigator.clipboard.writeText(text);
-      setCopied(key);
-      toast.success("Copied to clipboard");
-      window.setTimeout(() => setCopied(null), 1600);
+      setCopied(true);
+      toast.success("WhatsApp message copied to clipboard");
+      window.setTimeout(() => setCopied(false), 1600);
     } catch {
       toast.error("Clipboard unavailable in this browser");
     }
@@ -57,7 +51,7 @@ function PipelinePage() {
   return (
     <AppShell
       title="Lead Pipeline Studio"
-      subtitle={`${leads.length} ICP-matched enterprise accounts · outreach generated from detected pain signals`}
+      subtitle={`${leads.length} key regional accounts · outreach drafted from detected pain points`}
       actions={
         <>
           <div className="relative">
@@ -77,13 +71,13 @@ function PipelinePage() {
     >
       <div className="overflow-hidden rounded-xl border border-border bg-card">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1040px] text-sm">
+          <table className="w-full min-w-[960px] text-sm">
             <thead>
               <tr className="border-b border-border bg-surface text-left text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                <th className="px-5 py-3 font-semibold">Company</th>
-                <th className="px-5 py-3 font-semibold">ICP tier</th>
-                <th className="px-5 py-3 font-semibold">AI-detected pain point</th>
-                <th className="px-5 py-3 font-semibold">Decision maker</th>
+                <th className="px-5 py-3 font-semibold">Account Name</th>
+                <th className="px-5 py-3 font-semibold">Territory</th>
+                <th className="px-5 py-3 font-semibold">Lead Type</th>
+                <th className="px-5 py-3 font-semibold">Primary Pain Point</th>
                 <th className="px-5 py-3 text-right font-semibold">Action</th>
               </tr>
             </thead>
@@ -91,32 +85,23 @@ function PipelinePage() {
               {rows.map((l) => (
                 <tr key={l.id} className="group transition-colors hover:bg-surface-raised/60">
                   <td className="px-5 py-3.5 align-top">
-                    <div className="font-medium">{l.company}</div>
-                    <div className="mt-0.5 text-[11px] text-muted-foreground">{l.industry}</div>
+                    <div className="font-medium">{l.name}</div>
+                    <div className="mt-0.5 text-[11px] text-muted-foreground">{l.contact}</div>
                   </td>
                   <td className="px-5 py-3.5 align-top">
-                    <span
-                      className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${tierStyles[l.tier]}`}
-                    >
-                      {l.tier}
+                    <span className="inline-flex rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+                      {l.territory}
                     </span>
-                    <div className="mt-1.5 flex items-center gap-1.5">
-                      <div className="h-1 w-16 overflow-hidden rounded-full bg-surface-raised">
-                        <div className="h-full bg-primary" style={{ width: `${l.fit}%` }} />
-                      </div>
-                      <span className="font-mono text-[10px] text-muted-foreground">{l.fit}</span>
-                    </div>
                   </td>
-                  <td className="max-w-[380px] px-5 py-3.5 align-top text-[13px] leading-relaxed text-muted-foreground">
+                  <td className="px-5 py-3.5 align-top text-[13px] text-muted-foreground">
+                    {l.type}
+                  </td>
+                  <td className="max-w-[360px] px-5 py-3.5 align-top text-[13px] leading-relaxed text-muted-foreground">
                     {l.pain}
                   </td>
-                  <td className="px-5 py-3.5 align-top">
-                    <div className="font-medium">{l.contact}</div>
-                    <div className="mt-0.5 text-[11px] text-muted-foreground">{l.role}</div>
-                  </td>
                   <td className="px-5 py-3.5 text-right align-top">
-                    <Button size="sm" onClick={() => setActive(l)} className="min-w-[150px] justify-center">
-                      <Sparkles className="size-3.5" /> [Draft Outreach]
+                    <Button size="sm" onClick={() => setActive(l)} className="min-w-[158px] justify-center">
+                      <MessageCircle className="size-3.5" /> Draft WhatsApp
                     </Button>
                   </td>
                 </tr>
@@ -134,16 +119,16 @@ function PipelinePage() {
       </div>
 
       <Sheet open={!!active} onOpenChange={(o) => !o && setActive(null)}>
-        <SheetContent className="w-full gap-0 overflow-y-auto border-border bg-background p-0 sm:max-w-xl">
+        <SheetContent className="w-[35%] min-w-[380px] gap-0 overflow-y-auto border-border bg-background p-0 sm:max-w-none">
           {active && (
             <>
               <SheetHeader className="border-b border-border p-6">
-                <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
-                  <Sparkles className="size-3.5" /> Generated sequence
+                <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald">
+                  <MessageCircle className="size-3.5" /> WhatsApp outreach
                 </div>
-                <SheetTitle className="mt-1 text-lg">{active.company}</SheetTitle>
+                <SheetTitle className="mt-1 text-lg">{active.name}</SheetTitle>
                 <SheetDescription className="text-sm">
-                  {active.contact} · {active.role}
+                  {active.territory} · {active.type}
                 </SheetDescription>
                 <div className="mt-3 rounded-lg border border-border bg-surface p-3 text-[13px] leading-relaxed text-muted-foreground">
                   <span className="font-medium text-foreground">Pain signal · </span>
@@ -155,49 +140,28 @@ function PipelinePage() {
                 <section className="overflow-hidden rounded-xl border border-border bg-card">
                   <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
                     <div className="flex items-center gap-2 text-xs font-semibold">
-                      <Mail className="size-3.5 text-primary" /> Step 1 · Email
+                      <MessageCircle className="size-3.5 text-emerald" /> WhatsApp message
                     </div>
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() =>
-                        copy("email", `Subject: ${active.email.subject}\n\n${active.email.body}`)
-                      }
+                      onClick={() => copy(active.whatsapp)}
                     >
-                      {copied === "email" ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+                      {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
                       [Copy to Clipboard]
                     </Button>
                   </div>
-                  <div className="px-4 py-3">
-                    <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Subject</div>
-                    <div className="mt-0.5 text-sm font-medium">{active.email.subject}</div>
-                    <pre className="mt-3 whitespace-pre-wrap font-sans text-[13px] leading-relaxed text-muted-foreground">
-                      {active.email.body}
-                    </pre>
-                  </div>
-                </section>
-
-                <section className="overflow-hidden rounded-xl border border-border bg-card">
-                  <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
-                    <div className="flex items-center gap-2 text-xs font-semibold">
-                      <Linkedin className="size-3.5 text-emerald" /> Step 2 · LinkedIn (Day 3)
-                    </div>
-                    <Button size="sm" variant="outline" onClick={() => copy("li", active.linkedin)}>
-                      {copied === "li" ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-                      [Copy to Clipboard]
-                    </Button>
-                  </div>
-                  <p className="px-4 py-3 text-[13px] leading-relaxed text-muted-foreground">
-                    {active.linkedin}
-                  </p>
+                  <pre className="whitespace-pre-wrap px-4 py-3 font-sans text-[13px] leading-relaxed text-muted-foreground">
+                    {active.whatsapp}
+                  </pre>
                 </section>
 
                 <div className="flex gap-2">
                   <Button
                     className="flex-1"
-                    onClick={() => toast.success("Sequence queued", { description: active.company })}
+                    onClick={() => toast.success("Message queued for WhatsApp send", { description: active.name })}
                   >
-                    Queue sequence
+                    Queue message
                   </Button>
                   <Button variant="outline" onClick={() => setActive(null)}>
                     Close

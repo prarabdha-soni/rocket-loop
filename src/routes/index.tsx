@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Link2, ArrowUpRight, RefreshCw, ShieldAlert } from "lucide-react";
+import { Link2, ArrowUpRight, RefreshCw, ShieldAlert, Crosshair } from "lucide-react";
+import { toast } from "sonner";
 
 import { AppShell } from "@/components/app-shell";
 import { Sparkline } from "@/components/sparkline";
@@ -10,16 +11,16 @@ import { opportunities, competitors } from "@/data/gtm";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Strategic Matrix — SignalOS GTM Workspace" },
+      { title: "Strategic Matrix — KotaWhey Nutrition, Kota" },
       {
         name: "description",
         content:
-          "Unified view of market openings, competitor deficiencies and verified opportunity signals for B2B go-to-market teams.",
+          "Kota market opportunity matrix and national brand deficiencies for KotaWhey Nutrition's regional protein distribution.",
       },
-      { property: "og:title", content: "Strategic Matrix — SignalOS GTM Workspace" },
+      { property: "og:title", content: "Strategic Matrix — KotaWhey Nutrition, Kota" },
       {
         property: "og:description",
-        content: "Market openings and competitor gaps in one execution-ready matrix.",
+        content: "Student-dense market openings and national brand gaps across Kota, Rajasthan.",
       },
     ],
   }),
@@ -32,17 +33,18 @@ const toneMap = {
   amber: { chip: "border-amber/40 bg-amber/10 text-amber", stroke: "var(--amber)" },
 } as const;
 
-const severityStyles: Record<string, string> = {
-  "Critical gap": "border-destructive/40 bg-destructive/10 text-destructive",
-  "Structural gap": "border-amber/40 bg-amber/10 text-amber",
-  "Emerging gap": "border-border-strong bg-surface-raised text-muted-foreground",
+const gapStyles: Record<string, string> = {
+  "Pricing Gap": "border-destructive/40 bg-destructive/10 text-destructive",
+  "Margin Gap": "border-amber/40 bg-amber/10 text-amber",
+  "Distribution Gap": "border-primary/40 bg-primary/10 text-primary",
+  "Product Format Gap": "border-border-strong bg-surface-raised text-muted-foreground",
 };
 
 function MatrixPage() {
   return (
     <AppShell
       title="Strategic Matrix"
-      subtitle="Market openings, competitor deficiencies and verified signals — refreshed 4 minutes ago"
+      subtitle="Kota market openings and national brand deficiencies — refreshed 2 mins ago"
       actions={
         <>
           <Button variant="outline" size="sm">
@@ -57,10 +59,9 @@ function MatrixPage() {
       <div className="grid gap-5 xl:grid-cols-3">
         <section className="xl:col-span-2">
           <div className="mb-3 flex items-baseline justify-between">
-            <h2 className="text-sm font-semibold tracking-tight">Opportunity Matrix</h2>
-            <span className="text-[11px] text-muted-foreground">
-              {opportunities.length} openings ranked by fit × contested-ness
-            </span>
+            <h2 className="text-sm font-semibold tracking-tight">
+              Kota Market Opportunity Matrix (Ranked by Student Density × Competitor Margins)
+            </h2>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -129,7 +130,9 @@ function MatrixPage() {
 
         <section>
           <div className="mb-3 flex items-baseline justify-between">
-            <h2 className="text-sm font-semibold tracking-tight">Competitor Intelligence Feed</h2>
+            <h2 className="text-sm font-semibold tracking-tight">
+              National Brand Deficiencies (Kota Region)
+            </h2>
             <span className="text-[11px] text-muted-foreground">Live</span>
           </div>
 
@@ -144,17 +147,27 @@ function MatrixPage() {
                     <h3 className="text-sm font-semibold tracking-tight">{c.name}</h3>
                     <p className="mt-0.5 text-[11px] text-muted-foreground">{c.posture}</p>
                   </div>
-                  <span className="font-mono text-[11px] text-muted-foreground">{c.share}</span>
                 </div>
                 <p className="mt-2.5 flex gap-2 text-[13px] leading-relaxed text-muted-foreground">
                   <ShieldAlert className="mt-0.5 size-3.5 shrink-0 text-destructive" />
                   {c.gap}
                 </p>
-                <span
-                  className={`mt-3 inline-flex rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${severityStyles[c.severity]}`}
-                >
-                  {c.severity}
-                </span>
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <span
+                    className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${gapStyles[c.tag]}`}
+                  >
+                    {c.tag}
+                  </span>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() =>
+                      toast.success(`Conquest playbook generated for ${c.name}`)
+                    }
+                  >
+                    <Crosshair className="size-3.5" /> Target Weakness
+                  </Button>
+                </div>
               </article>
             ))}
           </div>

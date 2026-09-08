@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check, CircleDot, Loader2, Rocket, FileCode2, Filter } from "lucide-react";
+import { Check, CircleDot, Loader2, Rocket, Filter } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/app-shell";
@@ -10,16 +10,16 @@ import { milestones } from "@/data/gtm";
 export const Route = createFileRoute("/execution")({
   head: () => ({
     meta: [
-      { title: "Execution Engine — SignalOS GTM Milestones" },
+      { title: "Execution Engine — KotaWhey Kota Field Milestones" },
       {
         name: "description",
         content:
-          "Turn GTM strategy into trackable milestones with per-task agents and blueprint generation inside SignalOS.",
+          "Deploy local field agents against KotaWhey's three regional distribution milestones across Kota, Rajasthan.",
       },
-      { property: "og:title", content: "Execution Engine — SignalOS GTM Milestones" },
+      { property: "og:title", content: "Execution Engine — KotaWhey Kota Field Milestones" },
       {
         property: "og:description",
-        content: "Trackable GTM milestones with deployable agents on every task.",
+        content: "Trackable regional milestones with deployable agents on every task.",
       },
     ],
   }),
@@ -33,25 +33,27 @@ const statusStyles: Record<string, string> = {
 };
 
 function ExecutionPage() {
-  const [done, setDone] = useState<Record<string, boolean>>({ t1: true, t2: true, t5: true });
+  const [done, setDone] = useState<Record<string, boolean>>({});
+  const [dispatched, setDispatched] = useState<Record<string, boolean>>({});
   const [running, setRunning] = useState<string | null>(null);
 
   const total = milestones.reduce((n, m) => n + m.tasks.length, 0);
   const completed = Object.values(done).filter(Boolean).length;
 
-  function runAction(taskId: string, action: string, title: string) {
+  function runAction(taskId: string, title: string) {
     setRunning(taskId);
     window.setTimeout(() => {
       setRunning(null);
+      setDispatched((d) => ({ ...d, [taskId]: true }));
       setDone((d) => ({ ...d, [taskId]: true }));
-      toast.success(`${action} complete`, { description: title });
+      toast.success("Agent Dispatched", { description: title });
     }, 1100);
   }
 
   return (
     <AppShell
       title="Execution Engine"
-      subtitle={`${completed} of ${total} tasks executed across 4 active GTM milestones`}
+      subtitle={`${completed} of ${total} tasks executed across 3 active Kota field milestones`}
       actions={
         <>
           <Button variant="outline" size="sm">
@@ -81,7 +83,7 @@ function ExecutionPage() {
                       >
                         {m.status}
                       </span>
-                      <span className="text-[11px] text-muted-foreground">{m.window}</span>
+                      <span className="text-[11px] text-muted-foreground">{m.focus}</span>
                       <span className="text-[11px] text-muted-foreground">· {m.owner}</span>
                     </div>
                     <h2 className="mt-2 text-base font-semibold tracking-tight">{m.title}</h2>
@@ -104,6 +106,7 @@ function ExecutionPage() {
                   {m.tasks.map((t) => {
                     const isDone = !!done[t.id];
                     const isRunning = running === t.id;
+                    const isDispatched = !!dispatched[t.id];
                     return (
                       <li
                         key={t.id}
@@ -135,19 +138,28 @@ function ExecutionPage() {
 
                         <Button
                           size="sm"
-                          variant={t.action === "Deploy Agent" ? "default" : "outline"}
-                          disabled={isRunning}
-                          onClick={() => runAction(t.id, t.action, t.title)}
-                          className="ml-auto min-w-[164px] justify-center"
+                          variant={isDispatched ? "outline" : "default"}
+                          disabled={isRunning || isDispatched}
+                          onClick={() => runAction(t.id, t.title)}
+                          className={`ml-auto min-w-[164px] justify-center ${
+                            isDispatched
+                              ? "border-emerald/40 bg-emerald/10 text-emerald hover:bg-emerald/10 hover:text-emerald"
+                              : ""
+                          }`}
                         >
                           {isRunning ? (
-                            <Loader2 className="size-3.5 animate-spin" />
-                          ) : t.action === "Deploy Agent" ? (
-                            <Rocket className="size-3.5" />
+                            <>
+                              <Loader2 className="size-3.5 animate-spin" /> Deploying…
+                            </>
+                          ) : isDispatched ? (
+                            <>
+                              <Check className="size-3.5" /> Agent Dispatched
+                            </>
                           ) : (
-                            <FileCode2 className="size-3.5" />
+                            <>
+                              <Rocket className="size-3.5" /> Deploy Agent
+                            </>
                           )}
-                          {isRunning ? "Running…" : `[${t.action}]`}
                         </Button>
                       </li>
                     );
